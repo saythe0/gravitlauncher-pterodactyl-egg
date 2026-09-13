@@ -1,0 +1,62 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED FOR PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": "https://raw.githubusercontent.com/saythe0/gravitlauncher-pterodactyl-egg/main/egg-gravit-launchserver.json"
+    },
+    "exported_at": "2026-09-13T21:20:00+03:00",
+    "name": "GravitLauncher LaunchServer",
+    "author": "vadim@saythe.ru",
+    "description": "GravitLauncher LaunchServer for Pterodactyl. Uses a custom JDK 25 image with OpenJFX 25 jmods and installs official GravitLauncher release artifacts from GitHub.",
+    "features": null,
+    "docker_images": {
+        "Gravit JDK 25 Full": "ghcr.io/saythe0/gravitlauncher-pterodactyl:java25"
+    },
+    "file_denylist": [],
+    "startup": "LISTEN_PORT={{SERVER_PORT}} ./bin/launchserver",
+    "config": {
+        "files": "{}",
+        "startup": "{}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\nset -e\n\nmkdir -p /mnt/server\ncd /mnt/server\n\nVERSION=\"${GRAVIT_VERSION:-5.7.12}\"\nDOWNLOAD_URL=\"https://github.com/GravitLauncher/Launcher/releases/download/v${VERSION}/LaunchServerBuild.zip\"\n\necho \"Installing GravitLauncher LaunchServer v${VERSION}\"\n\napt-get update\napt-get install -y --no-install-recommends unzip\nrm -rf /var/lib/apt/lists/*\n\ncurl -fL \"${DOWNLOAD_URL}\" -o /tmp/LaunchServerBuild.zip\n\nrm -rf /tmp/gravit-launchserver\nmkdir -p /tmp/gravit-launchserver\nunzip -q /tmp/LaunchServerBuild.zip -d /tmp/gravit-launchserver\n\nif [ -d /tmp/gravit-launchserver/launchserver ]; then\n    SOURCE_DIR=\"/tmp/gravit-launchserver/launchserver\"\nelse\n    SOURCE_DIR=\"/tmp/gravit-launchserver\"\nfi\n\ncp -a \"${SOURCE_DIR}/.\" /mnt/server/\n\nif [ ! -f /mnt/server/bin/launchserver ]; then\n    echo \"ERROR: bin/launchserver was not found after extraction\"\n    exit 1\nfi\n\nchmod +x /mnt/server/bin/launchserver\n\nrm -rf /tmp/gravit-launchserver /tmp/LaunchServerBuild.zip\n\necho \"GravitLauncher LaunchServer v${VERSION} installed successfully\"\n",
+            "container": "ghcr.io/pterodactyl/installers:debian",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "GravitLauncher Version",
+            "description": "GravitLauncher version to install. Example: 5.7.12. Reinstall the server after changing this value to update LaunchServer files.",
+            "env_variable": "GRAVIT_VERSION",
+            "default_value": "5.7.12",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "External Address",
+            "description": "Public HTTPS address used by LaunchServer when LaunchServer.json is generated for the first time. Do not add /api. Example: https://launcher.example.com",
+            "env_variable": "ADDRESS",
+            "default_value": "https://launcher.example.ru",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|url|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "Project Name",
+            "description": "Project name used when LaunchServer.json is generated for the first time.",
+            "env_variable": "PROJECTNAME",
+            "default_value": "Example",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:64",
+            "field_type": "text"
+        }
+    ]
+}
