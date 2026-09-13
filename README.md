@@ -112,7 +112,7 @@ GRAVIT_VERSION
 По умолчанию:
 
 ```text
-https://launcher.example.ru
+https://launcher.example.com
 ```
 
 Добавлять `/api` вручную не нужно.
@@ -193,7 +193,7 @@ GravitLauncher LaunchServer :9274
 Для текущего проекта предполагается:
 
 ```text
-https://launcher.example.ru
+https://launcher.example.com
 ```
 
 ## Локальная сборка Docker-образа

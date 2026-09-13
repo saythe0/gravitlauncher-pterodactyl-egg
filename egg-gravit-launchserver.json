@@ -42,7 +42,7 @@
             "name": "External Address",
             "description": "Public HTTPS address used by LaunchServer when LaunchServer.json is generated for the first time. Do not add /api. Example: https://launcher.example.com",
             "env_variable": "ADDRESS",
-            "default_value": "https://launcher.example.ru",
+            "default_value": "https://launcher.example.com",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|url|max:255",
